@@ -4,7 +4,7 @@
 Application for managing warehouses for rent. The customer has the option of searching for a warehouse, booking and extending the rental period.
 It is used by the owner to monitor the booking status of his storages.
 
-##What does it do?
+## What does it do?
 
 This application has following funcionalites:
 
@@ -16,18 +16,18 @@ This application has following funcionalites:
 - managing rental periods
 - preparation of daily/weekly/monthly report
 
-##What is to be done?
+## What is to be done?
 - finish project
 - implement it
 
-##How to bulid?
+## How to bulid?
 
 To build this application:
 ```
 cd target
-java - jar 
+java - jar  storageManager.jar
 
 ```
 
-##Authors
+## Authors
 Marta Kowalczyk @Ciechmar
