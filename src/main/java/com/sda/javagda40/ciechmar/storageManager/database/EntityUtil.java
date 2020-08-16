@@ -52,7 +52,7 @@ public class EntityUtil<T> {
         }
     }
 
-    public List<T> findAll(Class<T> classType) {
+    public List<T> getAll(Class<T> classType) {
         List<T> list = new ArrayList<>();
         SessionFactory sessionFactory = HibernateUtil.getOurSessionFactory();
         try (Session session = sessionFactory.openSession()) {

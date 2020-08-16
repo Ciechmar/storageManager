@@ -17,8 +17,7 @@ public class HibernateUtil {
             System.out.println("buduje sesję");
             SESSION_FACTORY = configuration.buildSessionFactory();
         } catch (HibernateException he) {
-            System.out.println("Walę Errorem");
-//            System.err.println(he.getMessage());
+            System.err.println(he.getMessage());
             throw he;
         }
     }

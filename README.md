@@ -45,5 +45,5 @@ java - jar  storageManager.jar
 
 ```
 
-## Authors
+## Author
 Marta Kowalczyk @Ciechmar

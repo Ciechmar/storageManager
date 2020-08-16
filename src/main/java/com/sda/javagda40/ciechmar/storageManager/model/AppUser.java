@@ -21,6 +21,7 @@ public class AppUser {
     private String NIP;
     private boolean isCompany;
 
+
     public AppUser() {
     }
 

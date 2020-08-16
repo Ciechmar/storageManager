@@ -8,5 +8,6 @@ public class App {
         System.out.println("Initial version.");
         HibernateUtil.getOurSessionFactory();
         System.out.println("Tested Hibernate");
+
     }
 }
