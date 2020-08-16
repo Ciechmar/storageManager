@@ -12,7 +12,7 @@ public class App {
         System.out.println("Tested Hibernate");
 
         EntityDao<AppUser> appUserEntityDao = new EntityDao<>();
-        appUserEntityDao.saveOrUpdate(new AppUser("Maryna", "Zuch", "następny@o2.pl","*****123***", false, null, null));
+        appUserEntityDao.saveOrUpdate(new AppUser("Maryna", "Zuch","510458965","następny@o2.pl","*****123***", false));
 
 
     }

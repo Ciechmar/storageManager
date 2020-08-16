@@ -16,5 +16,10 @@
         <property name="show_sql">true</property>
 
         <mapping class="com.sda.javagda40.ciechmar.storageManager.model.AppUser"/>
+        <mapping class="com.sda.javagda40.ciechmar.storageManager.model.Address"/>
+        <mapping class="com.sda.javagda40.ciechmar.storageManager.model.CompanyData"/>
+        <mapping class="com.sda.javagda40.ciechmar.storageManager.model.Storage"/>
+<!--        <mapping class="com.sda.javagda40.ciechmar.storageManager.model.Rent"/>-->
+<!--        <mapping class="com.sda.javagda40.ciechmar.storageManager.model."/>-->
     </session-factory>
 </hibernate-configuration>
