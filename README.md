@@ -4,6 +4,15 @@
 Application for managing warehouses for rent. The customer has the option of searching for a warehouse, booking and extending the rental period.
 It is used by the owner to monitor the booking status of his storages.
 
+
+## Technologies (Prerequisites)
+Project is created with:
+- JDK 11
+- Hibernate 
+- MySQL Connector
+
+You should have access to MySQL Database. Access to the database is controlled via configuration file in resources.
+
 ## What does it do?
 
 This application has following funcionalites:
@@ -20,9 +29,16 @@ This application has following funcionalites:
 - finish project
 - implement it
 
+
 ## How to bulid?
 
 To build this application:
+```aidl
+mvn package
+```
+
+to run this aplication:
+
 ```
 cd target
 java - jar  storageManager.jar
