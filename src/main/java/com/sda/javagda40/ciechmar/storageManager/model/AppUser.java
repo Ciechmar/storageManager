@@ -1,13 +1,19 @@
 package com.sda.javagda40.ciechmar.storageManager.model;
 
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
-
 
 public class AppUser {
     @Id
@@ -15,69 +21,19 @@ public class AppUser {
     private Long id;
     private String firstName;
     private String lastName;
-    private String email;
+    private String email; // jest też loginem
     private String password;
+    private boolean isCompany;
     private String companyName;
     private String NIP;
-    private boolean isCompany;
 
-
-    public AppUser() {
-    }
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public void setFirstName(String firstName) {
+    public AppUser(String firstName, String lastName, String email, String password, boolean isCompany, String companyName, String NIP) {
         this.firstName = firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
         this.lastName = lastName;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
         this.email = email;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
         this.password = password;
-    }
-
-    public String getCompanyName() {
-        return companyName;
-    }
-
-    public void setCompanyName(String companyName) {
+        this.isCompany = isCompany;
         this.companyName = companyName;
-    }
-
-    public String getNIP() {
-        return NIP;
-    }
-
-    public void setNIP(String NIP) {
         this.NIP = NIP;
-    }
-
-    public boolean isCompany() {
-        return isCompany;
-    }
-
-    public void setCompany(boolean company) {
-        isCompany = company;
     }
 }

@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class EntityUtil<T> {
+public class EntityDao<T> {
     public void saveOrUpdate(T entity) {
         SessionFactory sessionFactory = HibernateUtil.getOurSessionFactory();
         Transaction transaction = null;
@@ -52,7 +52,7 @@ public class EntityUtil<T> {
         }
     }
 
-    public List<T> getAll(Class<T> classType) {
+    public List<T> findAll(Class<T> classType) {
         List<T> list = new ArrayList<>();
         SessionFactory sessionFactory = HibernateUtil.getOurSessionFactory();
         try (Session session = sessionFactory.openSession()) {
