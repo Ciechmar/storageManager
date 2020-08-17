@@ -1,13 +1,9 @@
 package com.sda.javagda40.ciechmar.storageManager.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.Set;
 
 @Entity
 @Data
@@ -22,11 +18,25 @@ public class Storage {
     private StorageSize size;
     private boolean forSanepidUse;
     private boolean isGarage;
+    private float standardPrize;
 
     private Floor floor;
     private StorageColor color;
 
     private StorageStatus status;
 
+    @OneToMany(mappedBy = "storage")
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
+    private Set<Rent> storageRentals;
 
+    public Storage(StorageSize size, boolean forSanepidUse, boolean isGarage, float standardPrize, Floor floor, StorageColor color, StorageStatus status) {
+        this.size = size;
+        this.forSanepidUse = forSanepidUse;
+        this.isGarage = isGarage;
+        this.standardPrize = standardPrize;
+        this.floor = floor;
+        this.color = color;
+        this.status = status;
+    }
 }

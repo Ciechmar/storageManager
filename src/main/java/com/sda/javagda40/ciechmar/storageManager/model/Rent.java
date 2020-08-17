@@ -6,30 +6,35 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 
-@Data
 @Entity
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class CompanyData {
+public class Rent {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String companyName;
-    private String NIP;
+    private LocalDate rentFrom;
+    private LocalDate rentTo;
 
-    @OneToOne (mappedBy = "company")
-    @EqualsAndHashCode.Exclude
-    private Address address;
+    private float finalPrize;
 
     @ManyToOne
     @EqualsAndHashCode.Exclude
-    private AppUser user;
+    private Storage storage;
 
-    public CompanyData(String companyName, String NIP) {
-        this.companyName = companyName;
-        this.NIP = NIP;
+    @ManyToOne
+    @EqualsAndHashCode.Exclude
+    private AppUser userrent;
+
+    public Rent(LocalDate rentFrom, LocalDate rentTo, float finalPrize) {
+        this.rentFrom = rentFrom;
+        this.rentTo = rentTo;
+        this.finalPrize = finalPrize;
     }
+
 }

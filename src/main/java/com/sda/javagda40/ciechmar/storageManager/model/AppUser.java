@@ -22,9 +22,22 @@ public class AppUser {
     private String password;
     private boolean isCompany;
 
-    @OneToMany (mappedBy = "user")
+    @ManyToOne
     @EqualsAndHashCode.Exclude
-    private Set<Address> addresses;
+    @ToString.Exclude
+    private Address address;
+
+    @OneToMany(mappedBy = "user") //jeden user może mieć kilka firm
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
+    private Set<CompanyData> companies;
+
+
+    @OneToMany (mappedBy = "userrent")
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
+    private Set<Rent> rentals;
+
 
     public AppUser(String firstName, String lastName, String phoneNumber, String email, String password, boolean isCompany) {
 
@@ -35,4 +48,5 @@ public class AppUser {
         this.password = password;
         this.isCompany = isCompany;
     }
+
 }
