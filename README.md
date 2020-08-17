@@ -24,16 +24,19 @@ This application has following funcionalites:
 - searching for storage with chosen size or specification
 - managing rental periods
 - preparation of daily/weekly/monthly report
+- the ability to give prices in the promotion
+
 
 ## What is to be done?
-- finish project
-- implement it
+- create parsers
+- build app logic
+- test it
 
 
 ## How to bulid?
 
 To build this application:
-```aidl
+```
 mvn package
 ```
 

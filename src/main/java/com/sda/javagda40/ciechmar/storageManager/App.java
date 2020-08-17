@@ -35,20 +35,22 @@ public class App {
         EntityDao<AppUser> appUserEntityDao = new EntityDao<>();
         AppUser appUser = new AppUser();
         Scanner scanner = new Scanner(System.in);
-        String answer = scanner.nextLine();
+//        String answer = scanner.nextLine();
         System.out.println("Podaj dane nowego użytkownika:");
         System.out.println("Imie:");
-        appUser.setFirstName(answer);
+        appUser.setFirstName(scanner.nextLine());
         System.out.println("Nazwisko:");
-        appUser.setLastName(answer);
+        appUser.setLastName(scanner.nextLine());
         System.out.println("Numer telefonu:");
-        appUser.setPhoneNumber(answer);
+        appUser.setPhoneNumber(scanner.nextLine());
         System.out.println("Adres kontaktowy email:");
-        appUser.setEmail(answer);
+        appUser.setEmail(scanner.nextLine());
         System.out.println("Czy jest to klient prywatny/ indywidualny? (T/N)");
-        if (answer.equalsIgnoreCase("t")) {
+        if (scanner.nextLine().equalsIgnoreCase("t")) {
             appUser.setCompany(true);
         } else appUser.setCompany(false);
+
+        appUserEntityDao.saveOrUpdate(appUser);
     }
 
     private static void handleListUser(String[] words) {
