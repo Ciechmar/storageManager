@@ -36,12 +36,11 @@ public class App {
                     words[1].equalsIgnoreCase("find")) {
                 handleFindUser(words);
             }
-
         } while (!command.equalsIgnoreCase("end"));
 
     }
 
-    // Na razie zwraca na ekran, w przyszłości chcę by zwracało AppUser'a, by móc wykorzystać tę metodę w metodzie handleDeleteUser()
+    // Na razie zwraca na ekran, w przyszłości chcę by zwracało AppUser'a (a nawet Optional), by móc wykorzystać tę metodę w metodzie handleDeleteUser()
     private static void handleFindUser(String[] words) {
         Scanner scanner = new Scanner(System.in);
 
@@ -58,6 +57,7 @@ public class App {
                 for (AppUser user : usersList) {
                     if (user.getLastName().equalsIgnoreCase(nameString)) {
                         System.out.println(user);
+//                        return user;
                     }
                 }
                 break;
@@ -71,6 +71,7 @@ public class App {
                 for (AppUser user : usersList) {
                     if (user.getPhoneNumber().equals(telNumber)) {
                         System.out.println(user);
+//                        return user;
                     }
                 }
                 break;
@@ -82,6 +83,7 @@ public class App {
                 System.out.println("Podaj id:");
                 Long id = scanner.nextLong();
                 userEntityDao.findById(AppUser.class, id).ifPresent(System.out::println);
+//                return userEntityDao.findById(AppUser.class, id).get();
                 break;
             }
         }
