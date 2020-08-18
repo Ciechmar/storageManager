@@ -19,7 +19,7 @@ public class Menu {
                     words[1].equalsIgnoreCase("list")) {
                 handleListUser(words);
             } else if (words[0].equalsIgnoreCase("storage") &&
-                    words[1].equalsIgnoreCase("list")) {
+                    words[1].equalsIgnoreCase("list")) { //w późniejszym etapie szukanie po kryteriach (mini/midi/max , po sektorach, piętrach itd)
                 handleListStorage(words);
             } else if (words[0].equalsIgnoreCase("user") &&
                     words[1].equalsIgnoreCase("add")) {
@@ -30,6 +30,9 @@ public class Menu {
             } else if (words[0].equalsIgnoreCase("user") &&
                     words[1].equalsIgnoreCase("delete")) {
                 handleDeleteUser(words);
+            } else if (words[0].equalsIgnoreCase("storage") &&
+                    words[1].equalsIgnoreCase("delete")) {
+                handleDeleteStorage(words);
             } else if (words[0].equalsIgnoreCase("user") &&
                     words[1].equalsIgnoreCase("find")) {
                 handleFindUser(words);
@@ -37,12 +40,37 @@ public class Menu {
         } while (!command.equalsIgnoreCase("end"));
     }
 
+    private static void handleDeleteStorage(String[] words) {
+        System.out.println("Czy znasz ID użytkownika, którego chcesz usunąć z bazy danych? T/N");
+        Scanner scanner = new Scanner(System.in);
+        if (scanner.nextLine().equalsIgnoreCase("T")) {
+            System.out.println("Podaj ID użytkownia:");
+            Long id = scanner.nextLong();
+            EntityDao<AppUser> userEntityDao = new EntityDao<>();
+            userEntityDao.findById(AppUser.class, id).ifPresent(user -> userEntityDao.delete(user));
+        } else {
+            handleFindUser("find user".split(" "));
+            System.out.println("Podaj ID użytkownia:");
+            Long id = scanner.nextLong();
+            EntityDao<AppUser> userEntityDao = new EntityDao<>();
+            userEntityDao.findById(AppUser.class, id).ifPresent(user -> userEntityDao.delete(user));
+        }
+
+
+    }
+
     private static void handleAddStorage(String[] words) {
         EntityDao<Storage> storageEntityDao = new EntityDao<>();
         Storage storage = new Storage();
         Scanner scanner = new Scanner(System.in);
+        System.out.println("Podaj dane nowego magazynu:");
         do {
-            System.out.println("Podaj dane nowego magazynu:");
+            storage.setDoorNumber(0);
+            System.out.println("Podaj numer magazynu:");
+            storage.setDoorNumber(scanner.nextInt());
+            scanner.nextLine();
+        } while (storage.getDoorNumber() == 0);
+        do {
             System.out.println("Rozmiar: 1/2/3/4/6/9/15/20(w m2)"); //MINI2m2, MINI3m2, MINI4m2, MIDI6m2, MIDI9m3, MAX15m2, MAX20m2;
 
             switch (scanner.nextLine()) {
@@ -238,8 +266,6 @@ public class Menu {
             EntityDao<AppUser> userEntityDao = new EntityDao<>();
             userEntityDao.findById(AppUser.class, id).ifPresent(user -> userEntityDao.delete(user));
         }
-
-
     }
 
     private static void handleAdduser(String[] words) {

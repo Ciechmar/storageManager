@@ -16,6 +16,7 @@ public class Storage {
     private Long id;
 
     private StorageSize size;
+    private int doorNumber;
     private boolean forSanepidUse;
     private boolean isGarage;
     private float standardPrize;
@@ -30,8 +31,9 @@ public class Storage {
     @ToString.Exclude
     private Set<Rent> storageRentals;
 
-    public Storage(StorageSize size, boolean forSanepidUse, boolean isGarage, float standardPrize, Floor floor, StorageColor color, StorageStatus status) {
+    public Storage(StorageSize size, int doorNumber, boolean forSanepidUse, boolean isGarage, float standardPrize, Floor floor, StorageColor color, StorageStatus status) {
         this.size = size;
+        this.doorNumber = doorNumber;
         this.forSanepidUse = forSanepidUse;
         this.isGarage = isGarage;
         this.standardPrize = standardPrize;
