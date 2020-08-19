@@ -3,10 +3,10 @@ package com.sda.javagda40.ciechmar.storageManager;
 import com.sda.javagda40.ciechmar.storageManager.database.EntityDao;
 import com.sda.javagda40.ciechmar.storageManager.model.*;
 
+import java.time.LocalDate;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Scanner;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 public class Menu {
 
@@ -26,8 +26,11 @@ public class Menu {
             } else if (words[0].equalsIgnoreCase("user") &&
                     words[1].equalsIgnoreCase("list")) {
                 handleListUser();
+            } else if (words[0].equalsIgnoreCase("show") &&
+                    words[1].equalsIgnoreCase("reservations")) {
+                showReservations();
             } else if (words[0].equalsIgnoreCase("storage") &&
-                    words[1].equalsIgnoreCase("list")) { //w późniejszym etapie szukanie po kryteriach (mini/midi/max , po sektorach, piętrach itd)
+                    words[1].equalsIgnoreCase("list")) {
                 handleListStorage();
             } else if (words[0].equalsIgnoreCase("user") &&
                     words[1].equalsIgnoreCase("add")) {
@@ -47,8 +50,48 @@ public class Menu {
             } else if (words[0].equalsIgnoreCase("storage") &&
                     words[1].equalsIgnoreCase("find")) {
                 handleFindStorage();
+            } else if (words[0].equalsIgnoreCase("storage") &&
+                    words[1].equalsIgnoreCase("rent")) {
+                handleRentStorage();
             }
         } while (!command.equalsIgnoreCase("end"));
+    }
+
+    private static void handleRentStorage() {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Podaj id klienta:");
+        Long userId = scanner.nextLong();
+        Long storageId = scanner.nextLong();
+        EntityDao<Storage> storageEntityDao = new EntityDao<>();
+        EntityDao<AppUser> userEntityDao = new EntityDao<>();
+//        Todo: - wybór kryteriów , wyświetlenie listy, znalezienie po Id, rezerwacja *** połączei danego magazynu z użytkownikiem ****
+        Rent rent = new Rent();
+        rent.setStorage(storageEntityDao.findById(Storage.class, storageId).get()); //ifPresent jakby nie było magazyn/użytkownika z takim ID
+        rent.setUserrent(userEntityDao.findById(AppUser.class, userId).get());
+        System.out.println("Od kiedy wynajem? YYYYY-MM-DD");
+        rent.setRentFrom(LocalDate.parse(scanner.nextLine()));
+        System.out.println("Do kiedy wynajem? YYYYY-MM-DD");
+        rent.setRentTo(LocalDate.parse(scanner.nextLine()));
+        System.out.println("Czy klientowi przysłguje zniżka? T/N");
+        if (scanner.nextLine().equalsIgnoreCase("n")) {
+            rent.setFinalPrize(storageEntityDao.findById(Storage.class, storageId).get().getStandardPrize());
+        } else {
+            float prize = storageEntityDao.findById(Storage.class, storageId).get().getStandardPrize();
+            System.out.println("Ile zniżki dodać?");
+            prize = prize - scanner.nextFloat();
+            System.out.printf("Cena za magazyn to: %.2f", prize); //jak zmusić,by nie było możliwości wpisania 3 miejsc po przecinku?! -nie gubiło tysięcznych złotówki
+            rent.setFinalPrize(prize);
+        }
+        storageEntityDao.findById(Storage.class, storageId).ifPresent(storage -> storage.setStatus(StorageStatus.RENT));
+        storageEntityDao.findById(Storage.class, storageId).ifPresent(storage -> storage.getStorageRentals().add(rent));
+    }
+
+    private static void showReservations() {
+        EntityDao<Storage> storageEntityDao = new EntityDao<>();
+        List<Storage> storageList = storageEntityDao.findAll(Storage.class);
+        storageList.stream().filter(storage -> storage.getStatus().equals(StorageStatus.RENT))
+                .sorted(Comparator.comparing(Storage::getSize))
+                .forEach(System.out::println);
     }
 
     private static void handleFindStorage() {
@@ -362,17 +405,16 @@ public class Menu {
         System.out.println("Czy jest to klient firma? (T/N)");
         if (scanner.nextLine().equalsIgnoreCase("t")) {
             appUser.setCompany(true);
-            handleAddAdress();
-            handleCompanyData();
-
+            appUser.setAddress(handleAddAdress());
+            appUser.getCompanies().add(handleCompanyData());
         } else {
             appUser.setCompany(false);
-            handleAddAdress();
+            appUser.setAddress(handleAddAdress());
         }
         appUserEntityDao.saveOrUpdate(appUser);
     }
 
-    private static void handleCompanyData() {
+    private static CompanyData handleCompanyData() {
         Scanner scanner = new Scanner(System.in);
         CompanyData companyData = new CompanyData();
         EntityDao<CompanyData> entityDao = new EntityDao<>();
@@ -382,9 +424,10 @@ public class Menu {
         System.out.println("NIP:");
         companyData.setNIP(scanner.nextLine());
         entityDao.saveOrUpdate(companyData);
+        return companyData;
     }
 
-    private static void handleAddAdress() {
+    private static Address handleAddAdress() {
         Scanner scanner = new Scanner(System.in);
         Address address = new Address();
         EntityDao<Address> entityDao = new EntityDao<>();
@@ -398,6 +441,7 @@ public class Menu {
         System.out.println("Numer budynku:");
         address.setBuildingNumber(scanner.nextLine());
         entityDao.saveOrUpdate(address);
+        return address;
 
     }
 

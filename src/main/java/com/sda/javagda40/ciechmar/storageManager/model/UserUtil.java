@@ -8,7 +8,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public class UserUtil {
-    // Klasa w któej sa funkcjonalności dla klienta
+    // Klasa w której sa funkcjonalności dla klienta
     //-wyszukanie wolnych magazynów - podgląd specyfikacji magazynu
     //-możiwośc rezerwacji
 

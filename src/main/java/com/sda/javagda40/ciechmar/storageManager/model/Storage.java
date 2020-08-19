@@ -20,10 +20,8 @@ public class Storage {
     private boolean forSanepidUse;
     private boolean isGarage;
     private float standardPrize;
-
     private Floor floor;
     private StorageColor color;
-
     private StorageStatus status;
 
     @OneToMany(mappedBy = "storage")

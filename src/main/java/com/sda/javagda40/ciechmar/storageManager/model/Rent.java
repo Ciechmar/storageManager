@@ -20,7 +20,6 @@ public class Rent {
 
     private LocalDate rentFrom;
     private LocalDate rentTo;
-
     private float finalPrize;
 
     @ManyToOne
