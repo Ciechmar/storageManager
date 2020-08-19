@@ -7,10 +7,6 @@ public class App {
     public static void main(String[] args) {
         System.out.println("Initial version.");
         HibernateUtil.getOurSessionFactory();
-        Menu menu = new Menu();
-        menu.menu();
-
+        Menu.menu();
     }
-
-
 }
