@@ -38,7 +38,6 @@ public class AppUser {
     @ToString.Exclude
     private Set<Rent> rentals;
 
-
     public AppUser(String firstName, String lastName, String phoneNumber, String email, String password, boolean isCompany) {
 
         this.firstName = firstName;

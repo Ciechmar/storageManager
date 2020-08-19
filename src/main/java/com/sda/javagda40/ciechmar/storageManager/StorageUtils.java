@@ -7,6 +7,8 @@ import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Scanner;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class StorageUtils {
 
@@ -285,6 +287,14 @@ public class StorageUtils {
         classEntityDao.findAll(Storage.class)
 //                .stream()
                 .forEach((System.out::println));
+    }
+
+    protected static Set<Storage> showfreemagazynlistBySize() {
+        EntityDao<Storage> storageEntityDao = new EntityDao<>();
+        List<Storage> storageList = storageEntityDao.findAll(Storage.class);
+        Set<Storage> freeStorageSet = storageList.stream().filter(storage -> storage.getStatus().equals(StorageStatus.FREE)).collect(Collectors.toSet());
+        freeStorageSet.stream().sorted(Comparator.comparing(Storage::getSize)).forEach(System.out::println);
+        return freeStorageSet;
     }
 
     private static void findBySize(String size) {

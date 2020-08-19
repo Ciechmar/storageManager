@@ -12,12 +12,6 @@ public class UserUtil {
     //-wyszukanie wolnych magazynów - podgląd specyfikacji magazynu
     //-możiwośc rezerwacji
 
-    public static Set<Storage> showfreemagazynlistBySize() {
-        EntityDao<Storage> storageEntityDao = new EntityDao<>();
-        List<Storage> storageList = storageEntityDao.findAll(Storage.class);
-        Set<Storage> freeStorageSet = storageList.stream().filter(storage -> storage.getStatus().equals(StorageStatus.FREE)).collect(Collectors.toSet());
-        freeStorageSet.stream().sorted(Comparator.comparing(Storage::getSize)).forEach(System.out::println);
-        return freeStorageSet;
-    }
+
 
 }

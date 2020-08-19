@@ -32,4 +32,5 @@ public class CompanyData {
         this.companyName = companyName;
         this.NIP = NIP;
     }
+
 }

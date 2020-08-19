@@ -5,8 +5,7 @@ import com.sda.javagda40.ciechmar.storageManager.model.Address;
 import com.sda.javagda40.ciechmar.storageManager.model.AppUser;
 import com.sda.javagda40.ciechmar.storageManager.model.CompanyData;
 
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 public class UserUtil {
 
@@ -84,14 +83,28 @@ public class UserUtil {
         appUser.setPhoneNumber(scanner.nextLine());
         System.out.println("Adres kontaktowy email:");
         appUser.setEmail(scanner.nextLine());
+        appUserEntityDao.saveOrUpdate(appUser);
+        System.out.println("Wprowadzić nowy adres? T/N");
+        if (scanner.nextLine().equalsIgnoreCase("t")) { //gdy nowy musimy utowrzyć set i wprowadzić dane
+            Address address = handleAddAdress(appUser);
+            appUser.setAddress(address);
+        } else { // gdy adres istnieje to szukamy po id.
+            EntityDao<Address> addressEntityDao = new EntityDao<>();
+            System.out.println("Podaj id adresu:");
+            Optional<Address> addressById = addressEntityDao.findById(Address.class, scanner.nextLong());
+            scanner.nextLine();
+            appUser.setAddress(addressById.get());
+        }
         System.out.println("Czy jest to klient firma? (T/N)");
         if (scanner.nextLine().equalsIgnoreCase("t")) {
             appUser.setCompany(true);
-            appUser.setAddress(handleAddAdress());
-            appUser.getCompanies().add(handleCompanyData());
+            CompanyData companyData = handleCompanyData(appUser);
+            Set<CompanyData> companylist = new HashSet<>();
+            companylist.add(companyData);
+            appUser.setCompanies(companylist);
+
         } else {
             appUser.setCompany(false);
-            appUser.setAddress(handleAddAdress());
         }
         appUserEntityDao.saveOrUpdate(appUser);
     }
@@ -103,7 +116,7 @@ public class UserUtil {
                 .forEach((System.out::println));
     }
 
-    private static CompanyData handleCompanyData() {
+    private static CompanyData handleCompanyData(AppUser appUser) {
         Scanner scanner = new Scanner(System.in);
         CompanyData companyData = new CompanyData();
         EntityDao<CompanyData> entityDao = new EntityDao<>();
@@ -112,11 +125,34 @@ public class UserUtil {
         companyData.setCompanyName(scanner.nextLine());
         System.out.println("NIP:");
         companyData.setNIP(scanner.nextLine());
+        System.out.println("Czy adres jest zgodny z adresem użytkownika? T/N");
+        if (scanner.nextLine().equalsIgnoreCase("t")) {
+            companyData.setAddress(appUser.getAddress());
+        } else companyData.setAddress(handleAddAdress(companyData));
+        companyData.setUser(appUser);
         entityDao.saveOrUpdate(companyData);
         return companyData;
     }
 
-    private static Address handleAddAdress() {
+    private static Address handleAddAdress(AppUser appUser) {
+        Address address = addAddress();
+        EntityDao<Address> entityDao = new EntityDao<>();
+        Set<AppUser> users = new HashSet<>();
+        users.add(appUser);
+        address.setUssers(users);
+        entityDao.saveOrUpdate(address);
+        return address;
+    }
+
+    private static Address handleAddAdress(CompanyData company) {
+        Address address = addAddress();
+        EntityDao<Address> entityDao = new EntityDao<>();
+        address.setCompany(company);
+        entityDao.saveOrUpdate(address);
+        return address;
+    }
+
+    private static Address addAddress() {
         Scanner scanner = new Scanner(System.in);
         Address address = new Address();
         EntityDao<Address> entityDao = new EntityDao<>();
@@ -131,7 +167,6 @@ public class UserUtil {
         address.setBuildingNumber(scanner.nextLine());
         entityDao.saveOrUpdate(address);
         return address;
-
     }
 
 

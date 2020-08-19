@@ -47,6 +47,9 @@ public class Menu {
             } else if (words[0].equalsIgnoreCase("storage") &&
                     words[1].equalsIgnoreCase("rent")) {
                 StorageUtils.handleRentStorage();
+            } else if (words[0].equalsIgnoreCase("show") &&
+                    words[1].equalsIgnoreCase("free")) {
+                StorageUtils.showfreemagazynlistBySize();
             }
         } while (!command.equalsIgnoreCase("end"));
     }

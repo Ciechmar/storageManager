@@ -26,11 +26,9 @@ public class Address {
     @EqualsAndHashCode.Exclude
     private Set<AppUser> ussers;
 
-
     @OneToOne
     @EqualsAndHashCode.Exclude
     private CompanyData company;
-
 
     public Address(String city, String postCode, String street, String buildingNumber) {
         this.city = city;
