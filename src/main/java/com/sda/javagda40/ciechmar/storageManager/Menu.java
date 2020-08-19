@@ -3,18 +3,22 @@ package com.sda.javagda40.ciechmar.storageManager;
 import com.sda.javagda40.ciechmar.storageManager.database.EntityDao;
 import com.sda.javagda40.ciechmar.storageManager.model.*;
 
-import java.sql.SQLOutput;
 import java.util.List;
 import java.util.Scanner;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class Menu {
 
     protected static void menu() {
+
+        System.out.println("\n\n\n\n*************************************************");
+        System.out.println("  ***************STORAGE-MANAGER***************");
+        System.out.println("*************************************************");
         Scanner scanner = new Scanner(System.in);
         String command;
         do {
-            System.out.println("Wprowadz komende (lista komend wpisz: help):");
+            System.out.println("\n  Wprowadz komende (lista komend wpisz: help): ");
             command = scanner.nextLine();
             String[] words = command.split(" ");
             if (words[0].equalsIgnoreCase("help")) {
@@ -52,72 +56,24 @@ public class Menu {
         EntityDao<Storage> storageEntityDao = new EntityDao<>();
         List<Storage> storageList = storageEntityDao.findAll(Storage.class);
         System.out.println("Szukaj po: \n1.Rozmiar\n2.Specyfikacja\n3.Numer drzwi\n4.Id");
-//        String answer = scanner.nextLine();
         switch (scanner.nextLine()) {
             case "1":
             case "rozmiar": {
                 System.out.println("Lista magazynów rozmiar: \n1.MINI (1-4m2)\n2.MIDI(6-9 m2)\n3.MAX(15+ m2)\n4.Konkretny rozmiar");
-                switch (scanner.nextLine()) {
+                String answer = scanner.nextLine();
+                switch (answer) {
                     case "1":
-                    case "mini": {
-                        storageList.stream().filter(storage -> storage.getSize().equals(StorageSize.MINI1m2)).forEach(System.out::println);
-                        storageList.stream().filter(storage -> storage.getSize().equals(StorageSize.MINI2m2)).forEach(System.out::println);
-                        storageList.stream().filter(storage -> storage.getSize().equals(StorageSize.MINI3m2)).forEach(System.out::println);
-                        storageList.stream().filter(storage -> storage.getSize().equals(StorageSize.MINI4m2)).forEach(System.out::println);
-                        break;
-                    }
+                    case "mini":
                     case "2":
-                    case "midi": {
-                        storageList.stream().filter(storage -> storage.getSize().equals(StorageSize.MIDI6m2)).forEach(System.out::println);
-                        storageList.stream().filter(storage -> storage.getSize().equals(StorageSize.MIDI9m2)).forEach(System.out::println);
-                        break;
-                    }
+                    case "midi":
                     case "3":
                     case "max": {
-                        storageList.stream().filter(storage -> storage.getSize().equals(StorageSize.MAX15m2)).forEach(System.out::println);
-                        storageList.stream().filter(storage -> storage.getSize().equals(StorageSize.MAX20m2)).forEach(System.out::println);
+                        findBySizeMinMidiMax(answer);
                         break;
                     }
                     case "4": {
                         System.out.println("Podaj poszukiwany rozmiar:1/2/3/4/6/9/15/20");
-                        switch (scanner.nextLine()) {
-                            case "1": {
-                                storageList.stream().filter(storage -> storage.getSize().equals(StorageSize.MINI1m2)).forEach(System.out::println);
-                                break;
-                            }
-                            case "2": {
-                                storageList.stream().filter(storage -> storage.getSize().equals(StorageSize.MINI2m2)).forEach(System.out::println);
-                                break;
-                            }
-                            case "3": {
-                                storageList.stream().filter(storage -> storage.getSize().equals(StorageSize.MINI3m2)).forEach(System.out::println);
-                                break;
-                            }
-                            case "4": {
-                                storageList.stream().filter(storage -> storage.getSize().equals(StorageSize.MINI4m2)).forEach(System.out::println);
-                                break;
-                            }
-                            case "6": {
-                                storageList.stream().filter(storage -> storage.getSize().equals(StorageSize.MIDI6m2)).forEach(System.out::println);
-                                break;
-                            }
-                            case "9": {
-                                storageList.stream().filter(storage -> storage.getSize().equals(StorageSize.MIDI9m2)).forEach(System.out::println);
-                                break;
-                            }
-                            case "15": {
-                                storageList.stream().filter(storage -> storage.getSize().equals(StorageSize.MAX15m2)).forEach(System.out::println);
-                                break;
-                            }
-                            case "20": {
-                                storageList.stream().filter(storage -> storage.getSize().equals(StorageSize.MAX20m2)).forEach(System.out::println);
-                                break;
-                            }
-                            default: {
-                                System.out.println("Brak takiego rozmiaru");
-                                break;
-                            }
-                        }
+                        findBySize(scanner.nextLine());
                         break;
                     }
                     default: {
@@ -458,4 +414,81 @@ public class Menu {
 //                .stream()
                 .forEach((System.out::println));
     }
+
+    private static void findBySize(String size) {
+        EntityDao<Storage> storageEntityDao = new EntityDao<>();
+        List<Storage> storageList = storageEntityDao.findAll(Storage.class);
+
+        switch (size) {
+            case "1": {
+                storageList.stream().filter(storage -> storage.getSize().equals(StorageSize.MINI1m2)).forEach(System.out::println);
+                break;
+            }
+            case "2": {
+                storageList.stream().filter(storage -> storage.getSize().equals(StorageSize.MINI2m2)).forEach(System.out::println);
+                break;
+            }
+            case "3": {
+                storageList.stream().filter(storage -> storage.getSize().equals(StorageSize.MINI3m2)).forEach(System.out::println);
+                break;
+            }
+            case "4": {
+                storageList.stream().filter(storage -> storage.getSize().equals(StorageSize.MINI4m2)).forEach(System.out::println);
+                break;
+            }
+            case "6": {
+                storageList.stream().filter(storage -> storage.getSize().equals(StorageSize.MIDI6m2)).forEach(System.out::println);
+                break;
+            }
+            case "9": {
+                storageList.stream().filter(storage -> storage.getSize().equals(StorageSize.MIDI9m2)).forEach(System.out::println);
+                break;
+            }
+            case "15": {
+                storageList.stream().filter(storage -> storage.getSize().equals(StorageSize.MAX15m2)).forEach(System.out::println);
+                break;
+            }
+            case "20": {
+                storageList.stream().filter(storage -> storage.getSize().equals(StorageSize.MAX20m2)).forEach(System.out::println);
+                break;
+            }
+            default: {
+                System.out.println("Brak takiego rozmiaru");
+                break;
+            }
+        }
+    }
+
+    private static void findBySizeMinMidiMax(String size) {
+        EntityDao<Storage> storageEntityDao = new EntityDao<>();
+        List<Storage> storageList = storageEntityDao.findAll(Storage.class);
+        switch (size) {
+            case "1":
+            case "mini": {
+                storageList.stream().filter(storage -> storage.getSize().equals(StorageSize.MINI1m2)).forEach(System.out::println);
+//                Set<Storage> miniSizeSet = storageList.stream().filter(storage -> storage.getSize().equals(StorageSize.MINI1m2)).collect(Collectors.toSet());
+                storageList.stream().filter(storage -> storage.getSize().equals(StorageSize.MINI2m2)).forEach(System.out::println);
+//                storageList.stream().filter(storage -> storage.getSize().equals(StorageSize.MINI2m2)).collect(Collectors.toSet());
+                storageList.stream().filter(storage -> storage.getSize().equals(StorageSize.MINI3m2)).forEach(System.out::println);
+                storageList.stream().filter(storage -> storage.getSize().equals(StorageSize.MINI4m2)).forEach(System.out::println);
+                break;
+            }
+            case "2":
+            case "midi": {
+                storageList.stream().filter(storage -> storage.getSize().equals(StorageSize.MIDI6m2)).forEach(System.out::println);
+                storageList.stream().filter(storage -> storage.getSize().equals(StorageSize.MIDI9m2)).forEach(System.out::println);
+                break;
+            }
+            case "3":
+            case "max": {
+                storageList.stream().filter(storage -> storage.getSize().equals(StorageSize.MAX15m2)).forEach(System.out::println);
+                storageList.stream().filter(storage -> storage.getSize().equals(StorageSize.MAX20m2)).forEach(System.out::println);
+                break;
+            }
+            default:
+                System.out.println("Nie ma takiego rozmiaru magazynu");
+        }
+    }
+
+
 }
