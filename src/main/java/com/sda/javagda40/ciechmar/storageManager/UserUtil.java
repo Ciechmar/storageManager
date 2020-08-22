@@ -1,6 +1,7 @@
 package com.sda.javagda40.ciechmar.storageManager;
 
 import com.sda.javagda40.ciechmar.storageManager.database.EntityDao;
+import com.sda.javagda40.ciechmar.storageManager.database.UserDao;
 import com.sda.javagda40.ciechmar.storageManager.model.Address;
 import com.sda.javagda40.ciechmar.storageManager.model.AppUser;
 import com.sda.javagda40.ciechmar.storageManager.model.CompanyData;
@@ -8,73 +9,35 @@ import com.sda.javagda40.ciechmar.storageManager.model.CompanyData;
 import java.util.*;
 
 public class UserUtil {
+    private EntityDao<CompanyData> companyentityDao = new EntityDao<>();
+    private EntityDao<Address> addressEntityDao = new EntityDao<>();
+    private EntityDao<AppUser> userEntityDao = new EntityDao<>();
+    private CompanyData companyData = new CompanyData();
+    private Scanner scanner = new Scanner(System.in);
+    private AppUser appUser = new AppUser();
+    private Address address = new Address();
+    private UserDao userDao = new UserDao();
 
-    protected static void handleFindUser() {
-        Scanner scanner = new Scanner(System.in);
-        EntityDao<AppUser> userEntityDao = new EntityDao<>();
-        List<AppUser> usersList = userEntityDao.findAll(AppUser.class);
-        System.out.println("Szukaj po: \n1.Nazwisko\n2.Telefon\n3.Id");
-        String answer = scanner.nextLine();
-        switch (answer.toLowerCase()) {
-            case "1":
-            case "nazwisko": {
-                System.out.println("Podaj nazwisko:");
-                String nameString = scanner.nextLine();
-                for (AppUser user : usersList) {
-                    if (user.getLastName().equalsIgnoreCase(nameString)) {
-                        System.out.println(user);
-//                        return user;
-                    }
-                }
-                break;
-            }
-            case "2":
-            case "telefon": {
-                System.out.println("Podaj numer telefonu:");
-                String telNumber = scanner.nextLine();
-                for (AppUser user : usersList) {
-                    if (user.getPhoneNumber().equals(telNumber)) {
-                        System.out.println(user);
-//                        return user;
-                    }
-                }
-                break;
-            }
 
-            case "3":
-            case "id": {
-                System.out.println("Podaj id:");
-                Long id = scanner.nextLong();
-                userEntityDao.findById(AppUser.class, id).ifPresent(System.out::println);
-//                return userEntityDao.findById(AppUser.class, id).get();
-                break;
-            }
-        }
-
+    protected void handleFindUser() {
+        System.out.println("Szukaj [nazwisko/telefon/id]]");
+        System.out.println(userDao.findByNameOrPhoneOrID(scanner.nextLine()).toString());
     }
-
-    protected static void handleDeleteUser() { // Dopisać usunięcie Jego adresu ,jezeli jest jego jedynym właścicielme
+    protected void handleDeleteUser() { // Dopisać usunięcie Jego adresu ,jezeli jest jego jedynym właścicielme
         System.out.println("Czy znasz ID użytkownika, którego chcesz usunąć z bazy danych? T/N");
-        Scanner scanner = new Scanner(System.in);
         if (scanner.nextLine().equalsIgnoreCase("T")) {
             System.out.println("Podaj ID użytkownia:");
             Long id = scanner.nextLong();
-            EntityDao<AppUser> userEntityDao = new EntityDao<>();
             userEntityDao.findById(AppUser.class, id).ifPresent(userEntityDao::delete);
         } else {
             handleFindUser();
             System.out.println("Podaj ID użytkownia:");
             Long id = scanner.nextLong();
-            EntityDao<AppUser> userEntityDao = new EntityDao<>();
             userEntityDao.findById(AppUser.class, id).ifPresent(userEntityDao::delete);
         }
         System.out.println("Usunięto użytkownika z bazy");
     }
-
-    protected static void handleAdduser() {
-        EntityDao<AppUser> appUserEntityDao = new EntityDao<>();
-        AppUser appUser = new AppUser();
-        Scanner scanner = new Scanner(System.in);
+    protected void handleAdduser() {
         System.out.println("Podaj dane nowego użytkownika:");
         System.out.println("Imie:");
         appUser.setFirstName(scanner.nextLine());
@@ -84,7 +47,7 @@ public class UserUtil {
         appUser.setPhoneNumber(scanner.nextLine());
         System.out.println("Adres kontaktowy email:");
         appUser.setEmail(scanner.nextLine());
-        appUserEntityDao.saveOrUpdate(appUser);
+        userEntityDao.saveOrUpdate(appUser);
         System.out.println("Wprowadzić nowy adres? T/N");
         if (scanner.nextLine().equalsIgnoreCase("t")) { //gdy nowy musimy utowrzyć set i wprowadzić dane
             Address address = handleAddAdress(appUser);
@@ -107,20 +70,14 @@ public class UserUtil {
         } else {
             appUser.setCompany(false);
         }
-        appUserEntityDao.saveOrUpdate(appUser);
+        userEntityDao.saveOrUpdate(appUser);
     }
-
-    protected static void handleListUser() {
-        EntityDao<AppUser> appUserEntityDao = new EntityDao<>();
-        appUserEntityDao.findAll(AppUser.class)
-//                .stream()
+    protected void handleListUser() {
+        userEntityDao.findAll(AppUser.class)
                 .forEach((System.out::println));
     }
 
-    private static CompanyData handleCompanyData(AppUser appUser) {
-        Scanner scanner = new Scanner(System.in);
-        CompanyData companyData = new CompanyData();
-        EntityDao<CompanyData> entityDao = new EntityDao<>();
+    private CompanyData handleCompanyData(AppUser appUser) {
         System.out.println("Podaj dane firmy:");
         System.out.println("Nazwa firmy");
         companyData.setCompanyName(scanner.nextLine());
@@ -131,32 +88,27 @@ public class UserUtil {
             companyData.setAddress(appUser.getAddress());
         } else companyData.setAddress(handleAddAdress(companyData));
         companyData.setUser(appUser);
-        entityDao.saveOrUpdate(companyData);
+        companyentityDao.saveOrUpdate(companyData);
         return companyData;
     }
 
-    private static Address handleAddAdress(AppUser appUser) {
+    private Address handleAddAdress(AppUser appUser) {
         Address address = addAddress();
-        EntityDao<Address> entityDao = new EntityDao<>();
         Set<AppUser> users = new HashSet<>();
         users.add(appUser);
         address.setUssers(users);
-        entityDao.saveOrUpdate(address);
+        addressEntityDao.saveOrUpdate(address);
         return address;
     }
 
-    private static Address handleAddAdress(CompanyData company) {
+    private Address handleAddAdress(CompanyData company) {
         Address address = addAddress();
-        EntityDao<Address> entityDao = new EntityDao<>();
         address.setCompany(company);
-        entityDao.saveOrUpdate(address);
+        addressEntityDao.saveOrUpdate(address);
         return address;
     }
 
-    private static Address addAddress() {
-        Scanner scanner = new Scanner(System.in);
-        Address address = new Address();
-        EntityDao<Address> entityDao = new EntityDao<>();
+    private Address addAddress() {
         System.out.println("Podaj dane adresowe użytkownika:");
         System.out.println("Miasto");
         address.setCity(scanner.nextLine());
@@ -166,7 +118,7 @@ public class UserUtil {
         address.setStreet(scanner.nextLine());
         System.out.println("Numer budynku:");
         address.setBuildingNumber(scanner.nextLine());
-        entityDao.saveOrUpdate(address);
+        addressEntityDao.saveOrUpdate(address);
         return address;
     }
 

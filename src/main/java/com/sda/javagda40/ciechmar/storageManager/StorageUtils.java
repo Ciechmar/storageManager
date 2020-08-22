@@ -1,25 +1,25 @@
 package com.sda.javagda40.ciechmar.storageManager;
 
 import com.sda.javagda40.ciechmar.storageManager.database.EntityDao;
+import com.sda.javagda40.ciechmar.storageManager.database.StorageDao;
 import com.sda.javagda40.ciechmar.storageManager.model.*;
 
 import java.time.LocalDate;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Scanner;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 public class StorageUtils {
+    private EntityDao<Storage> storageEntityDao = new EntityDao<>();
+    private EntityDao<Rent> rentEntityDao = new EntityDao<>();
+    private EntityDao<AppUser> userEntityDao = new EntityDao<>();
+    private StorageDao storageDao = new StorageDao();
+    private Scanner scanner = new Scanner(System.in);
 
-    protected static void handleRentStorage() {
-        Scanner scanner = new Scanner(System.in);
+    protected void handleRentStorage() {
         System.out.println("Podaj id klienta:");
         Long userId = scanner.nextLong();
         System.out.println("Podaj Id wynajmowanego magazynu:");
         Long storageId = scanner.nextLong();
-        EntityDao<Storage> storageEntityDao = new EntityDao<>();
-        EntityDao<AppUser> userEntityDao = new EntityDao<>();
 //        Todo: - wybór kryteriów , wyświetlenie listy, znalezienie po Id, rezerwacja *** połączei danego magazynu z użytkownikiem ****
         Rent rent = new Rent();
         rent.setStorage(storageEntityDao.findById(Storage.class, storageId).get()); //ifPresent jakby nie było magazyn/użytkownika z takim ID
@@ -40,19 +40,20 @@ public class StorageUtils {
         }
         storageEntityDao.findById(Storage.class, storageId).ifPresent(storage -> storage.setStatus(StorageStatus.RENT));
         storageEntityDao.findById(Storage.class, storageId).ifPresent(storage -> storage.getStorageRentals().add(rent));
+
+        userEntityDao.findById(AppUser.class, userId).ifPresent(user -> user.getRentals().add(rent));
+        rentEntityDao.saveOrUpdate(rent);
     }
 
-    protected static void showReservations() {
-        EntityDao<Storage> storageEntityDao = new EntityDao<>();
-        List<Storage> storageList = storageEntityDao.findAll(Storage.class);
-        storageList.stream().filter(storage -> storage.getStatus().equals(StorageStatus.RENT))
-                .sorted(Comparator.comparing(Storage::getSize))
+    protected void showReservations() {
+//        List<Storage> storageList = storageEntityDao.findAll(Storage.class);
+//        storageList.stream().filter(storage -> storage.getStatus().equals(StorageStatus.RENT))
+//                .sorted(Comparator.comparing(Storage::getSize))
+        storageDao.findAllRented()
                 .forEach(System.out::println);
     }
 
-    protected static void handleFindStorage() {
-        Scanner scanner = new Scanner(System.in);
-        EntityDao<Storage> storageEntityDao = new EntityDao<>();
+    protected void handleFindStorage() {
         List<Storage> storageList = storageEntityDao.findAll(Storage.class);
         System.out.println("Szukaj po: \n1.Rozmiar\n2.Specyfikacja\n3.Numer drzwi\n4.Id");
         switch (scanner.nextLine()) {
@@ -97,7 +98,7 @@ public class StorageUtils {
             case "3":
             case "Numer drzwi": {
                 System.out.println("Podaj numer drzwi");
-                int doorNumber = scanner.nextInt();
+                int doorNumber = Integer.parseInt(scanner.nextLine()); // TODO: nextInt zastąp na nextLine
 //                scanner.nextLine();            usersList.stream().filter(storage -> storage.getDoorNumber(scanner.nextInt())).forEach(System.out::println);
                 for (Storage storage : storageList) {
                     if (storage.getDoorNumber() == doorNumber) {
@@ -121,10 +122,8 @@ public class StorageUtils {
 
     }
 
-    protected static void handleDeleteStorage() {
+    protected void handleDeleteStorage() {
         System.out.println("Czy znasz ID magazynu, którego chcesz usunąć z bazy danych? T/N");
-        Scanner scanner = new Scanner(System.in);
-        EntityDao<Storage> storageEntityDao = new EntityDao<>();
         if (scanner.nextLine().equalsIgnoreCase("T")) {
             System.out.println("Podaj ID magazynu:");
             Long id = scanner.nextLong();
@@ -138,10 +137,8 @@ public class StorageUtils {
         System.out.println("Usunięto magazyn o podanym ID");
     }
 
-    protected static void handleAddStorage() {
-        EntityDao<Storage> storageEntityDao = new EntityDao<>();
+    protected void handleAddStorage() {
         Storage storage = new Storage();
-        Scanner scanner = new Scanner(System.in);
         System.out.println("Podaj dane nowego magazynu:");
         do {
             storage.setDoorNumber(0);
@@ -281,25 +278,23 @@ public class StorageUtils {
         storageEntityDao.saveOrUpdate(storage);
     }
 
-    protected static void handleListStorage() {
+    protected void handleListStorage() {
         EntityDao<Storage> classEntityDao = new EntityDao();
         classEntityDao.findAll(Storage.class)
 //                .stream()
                 .forEach((System.out::println));
     }
 
-    protected static Set<Storage> showfreemagazynlistBySize() {
-        EntityDao<Storage> storageEntityDao = new EntityDao<>();
-        List<Storage> storageList = storageEntityDao.findAll(Storage.class);
-        Set<Storage> freeStorageSet = storageList.stream().filter(storage -> storage.getStatus().equals(StorageStatus.FREE)).collect(Collectors.toSet());
-        freeStorageSet.stream().sorted(Comparator.comparing(Storage::getSize)).forEach(System.out::println);
-        return freeStorageSet;
+    protected void showfreemagazynlistBySize() {
+//        List<Storage> storageList = storageEntityDao.findAll(Storage.class);
+//        Set<Storage> freeStorageSet = storageList.stream().filter(storage -> storage.getStatus().equals(StorageStatus.FREE)).collect(Collectors.toSet());
+//        freeStorageSet.stream().sorted(Comparator.comparing(Storage::getSize))
+        storageDao.findAllFree()
+                .forEach(System.out::println);
     }
 
-    private static void findBySize(String size) {
-        EntityDao<Storage> storageEntityDao = new EntityDao<>();
+    private void findBySize(String size) {
         List<Storage> storageList = storageEntityDao.findAll(Storage.class);
-
         switch (size) {
             case "1": {
                 storageList.stream().filter(storage -> storage.getSize().equals(StorageSize.MINI1m2)).forEach(System.out::println);
@@ -340,8 +335,7 @@ public class StorageUtils {
         }
     }
 
-    private static void findBySizeMinMidiMax(String size) {
-        EntityDao<Storage> storageEntityDao = new EntityDao<>();
+    private void findBySizeMinMidiMax(String size) {
         List<Storage> storageList = storageEntityDao.findAll(Storage.class);
         switch (size) {
             case "1":

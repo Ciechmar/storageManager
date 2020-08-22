@@ -10,7 +10,6 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-
 public class AppUser {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,7 +23,6 @@ public class AppUser {
 
     @ManyToOne
     @EqualsAndHashCode.Exclude
-    @ToString.Exclude
     private Address address;
 
     @OneToMany(mappedBy = "user") //jeden user może mieć kilka firm
@@ -33,7 +31,7 @@ public class AppUser {
     private Set<CompanyData> companies;
 
 
-    @OneToMany (mappedBy = "userrent")
+    @OneToMany (mappedBy = "userRent")
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
     private Set<Rent> rentals;

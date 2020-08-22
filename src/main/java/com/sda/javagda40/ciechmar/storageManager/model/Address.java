@@ -20,7 +20,6 @@ public class Address {
     private String street;
     private String buildingNumber;
 
-
     @OneToMany (mappedBy = "address", fetch = FetchType.EAGER) //pod jednym adresem kilku właścicieli może być (np.: żona i mąż oddzielnie i jedszcze siedziba firmy)
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
