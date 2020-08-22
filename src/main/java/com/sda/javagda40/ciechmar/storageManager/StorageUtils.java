@@ -54,7 +54,6 @@ public class StorageUtils {
     }
 
     protected void handleFindStorage() {
-        List<Storage> storageList = storageEntityDao.findAll(Storage.class);
         System.out.println("Szukaj po: \n1.Rozmiar\n2.Specyfikacja\n3.Numer drzwi\n4.Id");
         switch (scanner.nextLine()) {
             case "1":
@@ -63,12 +62,23 @@ public class StorageUtils {
                 String answer = scanner.nextLine();
                 switch (answer) {
                     case "1":
-                    case "mini":
+                    case "mini": {
+                        storageDao.findBySize(StorageSize.MINI1m2).forEach(System.out::println);
+                        storageDao.findBySize(StorageSize.MINI2m2).forEach(System.out::println);
+                        storageDao.findBySize(StorageSize.MINI3m2).forEach(System.out::println);
+                        storageDao.findBySize(StorageSize.MINI4m2).forEach(System.out::println);
+                        break;
+                    }
                     case "2":
-                    case "midi":
+                    case "midi": {
+                        storageDao.findBySize(StorageSize.MIDI6m2).forEach(System.out::println);
+                        storageDao.findBySize(StorageSize.MIDI9m2).forEach(System.out::println);
+                        break;
+                    }
                     case "3":
                     case "max": {
-                        findBySizeMinMidiMax(answer);
+                        storageDao.findBySize(StorageSize.MAX15m2).forEach(System.out::println);
+                        storageDao.findBySize(StorageSize.MAX20m2).forEach(System.out::println);
                         break;
                     }
                     case "4": {
@@ -84,14 +94,14 @@ public class StorageUtils {
             }
             case "2":
             case "specyfikacja": {
-                System.out.println("Lista magazynów typu \n1.garaż\2do użytku sanepidowskiego");
+                System.out.println("Lista magazynów typu \n1.garaż\2.do użytku sanepidowskiego");
                 String answer = scanner.nextLine();
                 if (answer.equals("1") || answer.equalsIgnoreCase("garaz") || answer.equalsIgnoreCase("garaż")) {
                     System.out.println("Magazyny garażowe:");
-                    storageList.stream().filter(Storage::isGarage).forEach(System.out::println);
+                    storageDao.findGarage().forEach(System.out::println);
                 } else {
                     System.out.println("Magazyny do użytku sanepidowskiego:");
-                    storageList.stream().filter(Storage::isForSanepidUse).forEach(System.out::println);
+                    storageDao.findForSanepidUse().forEach(System.out::println);
                 }
                 break;
             }
@@ -99,20 +109,14 @@ public class StorageUtils {
             case "Numer drzwi": {
                 System.out.println("Podaj numer drzwi");
                 int doorNumber = Integer.parseInt(scanner.nextLine()); // TODO: nextInt zastąp na nextLine
-//                scanner.nextLine();            usersList.stream().filter(storage -> storage.getDoorNumber(scanner.nextInt())).forEach(System.out::println);
-                for (Storage storage : storageList) {
-                    if (storage.getDoorNumber() == doorNumber) {
-                        System.out.println(storage);
-                    }
-                }
+                storageDao.findDoorNumber(doorNumber).forEach(System.out::println);
                 break;
             }
             case "4":
             case "id": {
                 System.out.println("Podaj id:");
-                Long id = scanner.nextLong();
+                Long id = Long.parseLong(scanner.nextLine());
                 storageEntityDao.findById(Storage.class, id).ifPresent(System.out::println);
-//                return storageEntityDao.findById(Storage.class, id).get();
                 break;
             }
             default:
@@ -281,14 +285,10 @@ public class StorageUtils {
     protected void handleListStorage() {
         EntityDao<Storage> classEntityDao = new EntityDao();
         classEntityDao.findAll(Storage.class)
-//                .stream()
                 .forEach((System.out::println));
     }
 
     protected void showfreemagazynlistBySize() {
-//        List<Storage> storageList = storageEntityDao.findAll(Storage.class);
-//        Set<Storage> freeStorageSet = storageList.stream().filter(storage -> storage.getStatus().equals(StorageStatus.FREE)).collect(Collectors.toSet());
-//        freeStorageSet.stream().sorted(Comparator.comparing(Storage::getSize))
         storageDao.findAllFree()
                 .forEach(System.out::println);
     }
@@ -332,36 +332,6 @@ public class StorageUtils {
                 System.out.println("Brak takiego rozmiaru");
                 break;
             }
-        }
-    }
-
-    private void findBySizeMinMidiMax(String size) {
-        List<Storage> storageList = storageEntityDao.findAll(Storage.class);
-        switch (size) {
-            case "1":
-            case "mini": {
-                storageList.stream().filter(storage -> storage.getSize().equals(StorageSize.MINI1m2)).forEach(System.out::println);
-//                Set<Storage> miniSizeSet = storageList.stream().filter(storage -> storage.getSize().equals(StorageSize.MINI1m2)).collect(Collectors.toSet());
-                storageList.stream().filter(storage -> storage.getSize().equals(StorageSize.MINI2m2)).forEach(System.out::println);
-//                storageList.stream().filter(storage -> storage.getSize().equals(StorageSize.MINI2m2)).collect(Collectors.toSet());
-                storageList.stream().filter(storage -> storage.getSize().equals(StorageSize.MINI3m2)).forEach(System.out::println);
-                storageList.stream().filter(storage -> storage.getSize().equals(StorageSize.MINI4m2)).forEach(System.out::println);
-                break;
-            }
-            case "2":
-            case "midi": {
-                storageList.stream().filter(storage -> storage.getSize().equals(StorageSize.MIDI6m2)).forEach(System.out::println);
-                storageList.stream().filter(storage -> storage.getSize().equals(StorageSize.MIDI9m2)).forEach(System.out::println);
-                break;
-            }
-            case "3":
-            case "max": {
-                storageList.stream().filter(storage -> storage.getSize().equals(StorageSize.MAX15m2)).forEach(System.out::println);
-                storageList.stream().filter(storage -> storage.getSize().equals(StorageSize.MAX20m2)).forEach(System.out::println);
-                break;
-            }
-            default:
-                System.out.println("Nie ma takiego rozmiaru magazynu");
         }
     }
 
