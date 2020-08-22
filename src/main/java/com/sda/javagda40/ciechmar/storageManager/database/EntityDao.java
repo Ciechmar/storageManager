@@ -1,6 +1,5 @@
 package com.sda.javagda40.ciechmar.storageManager.database;
 
-
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -14,6 +13,7 @@ import java.util.List;
 import java.util.Optional;
 
 public class EntityDao<T> {
+
     public void saveOrUpdate(T entity) {
         SessionFactory sessionFactory = HibernateUtil.getOurSessionFactory();
         Transaction transaction = null;

@@ -28,7 +28,7 @@ public class Rent {
 
     @ManyToOne
     @EqualsAndHashCode.Exclude
-    private AppUser userrent;
+    private AppUser UserRent;
 
     public Rent(LocalDate rentFrom, LocalDate rentTo, float finalPrize) {
         this.rentFrom = rentFrom;

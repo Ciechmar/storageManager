@@ -17,6 +17,7 @@ public class UserHelp {
         helpList.put("storage add     ", "Add new storage");
         helpList.put("storage delete  ", "Delete storage");
         helpList.put("storage list    ", "Show all storage list (id, size, floor, color, status, for sanepid use, is it garage");
+        helpList.put("storage rent    ", "Rent new storage");
         helpList.put("end             ", "Close program");
         helpList.put("show free       ", "Show list of free storages sort by size");
         helpList.put("show reservation", "Show list of rent storages sort by size");

@@ -16,13 +16,14 @@ public class StorageUtils {
         Scanner scanner = new Scanner(System.in);
         System.out.println("Podaj id klienta:");
         Long userId = scanner.nextLong();
+        System.out.println("Podaj Id wynajmowanego magazynu:");
         Long storageId = scanner.nextLong();
         EntityDao<Storage> storageEntityDao = new EntityDao<>();
         EntityDao<AppUser> userEntityDao = new EntityDao<>();
 //        Todo: - wybór kryteriów , wyświetlenie listy, znalezienie po Id, rezerwacja *** połączei danego magazynu z użytkownikiem ****
         Rent rent = new Rent();
         rent.setStorage(storageEntityDao.findById(Storage.class, storageId).get()); //ifPresent jakby nie było magazyn/użytkownika z takim ID
-        rent.setUserrent(userEntityDao.findById(AppUser.class, userId).get());
+        rent.setUserRent(userEntityDao.findById(AppUser.class, userId).get());
         System.out.println("Od kiedy wynajem? YYYYY-MM-DD");
         rent.setRentFrom(LocalDate.parse(scanner.nextLine()));
         System.out.println("Do kiedy wynajem? YYYYY-MM-DD");
@@ -121,22 +122,20 @@ public class StorageUtils {
     }
 
     protected static void handleDeleteStorage() {
-        System.out.println("Czy znasz ID użytkownika, którego chcesz usunąć z bazy danych? T/N");
+        System.out.println("Czy znasz ID magazynu, którego chcesz usunąć z bazy danych? T/N");
         Scanner scanner = new Scanner(System.in);
+        EntityDao<Storage> storageEntityDao = new EntityDao<>();
         if (scanner.nextLine().equalsIgnoreCase("T")) {
-            System.out.println("Podaj ID użytkownia:");
+            System.out.println("Podaj ID magazynu:");
             Long id = scanner.nextLong();
-            EntityDao<AppUser> userEntityDao = new EntityDao<>();
-            userEntityDao.findById(AppUser.class, id).ifPresent(userEntityDao::delete);
+            storageEntityDao.findById(Storage.class, id).ifPresent(storageEntityDao::delete);
         } else {
-            UserUtil.handleFindUser();
+            handleFindStorage();
             System.out.println("Podaj ID użytkownia:");
             Long id = scanner.nextLong();
-            EntityDao<AppUser> userEntityDao = new EntityDao<>();
-            userEntityDao.findById(AppUser.class, id).ifPresent(userEntityDao::delete);
+            storageEntityDao.findById(Storage.class, id).ifPresent(storageEntityDao::delete);
         }
-
-
+        System.out.println("Usunięto magazyn o podanym ID");
     }
 
     protected static void handleAddStorage() {

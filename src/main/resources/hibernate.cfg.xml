@@ -13,7 +13,8 @@
         <property name="connection.username">root</property> <!--Ustaw se hasło i usera jako to samo przy bazie. i nazwa bazy to storabeManager_db-->
         <property name="connection.password">root123!</property>
         <property name="hbm2ddl.auto">update</property>
-        <property name="show_sql">true</property>
+<!--        true by widziec zpytania hqsl'owe.-->
+        <property name="show_sql">false</property>
 
         <mapping class="com.sda.javagda40.ciechmar.storageManager.model.AppUser"/>
         <mapping class="com.sda.javagda40.ciechmar.storageManager.model.Address"/>

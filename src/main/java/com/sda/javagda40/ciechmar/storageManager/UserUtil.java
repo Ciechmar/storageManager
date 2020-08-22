@@ -53,7 +53,7 @@ public class UserUtil {
 
     }
 
-    protected static void handleDeleteUser() {
+    protected static void handleDeleteUser() { // Dopisać usunięcie Jego adresu ,jezeli jest jego jedynym właścicielme
         System.out.println("Czy znasz ID użytkownika, którego chcesz usunąć z bazy danych? T/N");
         Scanner scanner = new Scanner(System.in);
         if (scanner.nextLine().equalsIgnoreCase("T")) {
@@ -68,6 +68,7 @@ public class UserUtil {
             EntityDao<AppUser> userEntityDao = new EntityDao<>();
             userEntityDao.findById(AppUser.class, id).ifPresent(userEntityDao::delete);
         }
+        System.out.println("Usunięto użytkownika z bazy");
     }
 
     protected static void handleAdduser() {
