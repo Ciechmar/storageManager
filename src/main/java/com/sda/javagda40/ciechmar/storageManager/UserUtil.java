@@ -5,12 +5,14 @@ import com.sda.javagda40.ciechmar.storageManager.database.UserDao;
 import com.sda.javagda40.ciechmar.storageManager.model.Address;
 import com.sda.javagda40.ciechmar.storageManager.model.AppUser;
 import com.sda.javagda40.ciechmar.storageManager.model.CompanyData;
+import com.sda.javagda40.ciechmar.storageManager.model.Rent;
 
 import java.util.*;
 
 public class UserUtil {
     private EntityDao<CompanyData> companyentityDao = new EntityDao<>();
     private EntityDao<Address> addressEntityDao = new EntityDao<>();
+    private EntityDao<Rent> rentEntityDao = new EntityDao<>();
     private EntityDao<AppUser> userEntityDao = new EntityDao<>();
     private CompanyData companyData = new CompanyData();
     private Scanner scanner = new Scanner(System.in);
@@ -21,19 +23,17 @@ public class UserUtil {
 
     protected void handleFindUser() {
         System.out.println("Szukaj [nazwisko/telefon/id]]");
-        System.out.println(userDao.findByNameOrPhoneOrID(scanner.nextLine()).toString());
+        userDao.findByNameOrPhoneOrEmail(scanner.nextLine()).forEach(System.out::println);
     }
     protected void handleDeleteUser() { // Dopisać usunięcie Jego adresu ,jezeli jest jego jedynym właścicielme
         System.out.println("Czy znasz ID użytkownika, którego chcesz usunąć z bazy danych? T/N");
         if (scanner.nextLine().equalsIgnoreCase("T")) {
             System.out.println("Podaj ID użytkownia:");
-            Long id = scanner.nextLong();
-            userEntityDao.findById(AppUser.class, id).ifPresent(userEntityDao::delete);
+            userEntityDao.findById(AppUser.class, Long.parseLong(scanner.nextLine())).ifPresent(userEntityDao::delete);
         } else {
             handleFindUser();
             System.out.println("Podaj ID użytkownia:");
-            Long id = scanner.nextLong();
-            userEntityDao.findById(AppUser.class, id).ifPresent(userEntityDao::delete);
+            userEntityDao.findById(AppUser.class, Long.parseLong(scanner.nextLine())).ifPresent(userEntityDao::delete);
         }
         System.out.println("Usunięto użytkownika z bazy");
     }
@@ -122,5 +122,17 @@ public class UserUtil {
         return address;
     }
 
+    public void handleFindUserWithRentID(Long rentID) {
+        Optional<Rent> rentalById = rentEntityDao.findById(Rent.class, rentID);
+        List<AppUser> all = userEntityDao.findAll(AppUser.class);
+        for (AppUser user : all) {
+            if (user.getRentals().equals(rentalById)) {
+                System.out.println("User:");
+                System.out.println(user);
+            }
 
+        }
+
+//                .forEach(user ->user.getRentals().contains(rentalById));
+    }
 }

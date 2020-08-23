@@ -1,7 +1,6 @@
 package com.sda.javagda40.ciechmar.storageManager.database;
 
 import com.sda.javagda40.ciechmar.storageManager.model.AppUser;
-import com.sda.javagda40.ciechmar.storageManager.model.Storage;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -18,19 +17,19 @@ public class UserDao {
     private List<AppUser> list = new ArrayList<>();
     private Scanner scanner = new Scanner(System.in);
 
-    public List<AppUser> findByNameOrPhoneOrID(String searchedData) {
+    public List<AppUser> findByNameOrPhoneOrEmail(String searchedData) {
         try (Session session = sessionFactory.openSession()) {
             CriteriaBuilder cb = session.getCriteriaBuilder();
             CriteriaQuery<AppUser> criteriaQuery = cb.createQuery(AppUser.class);
             Root<AppUser> rootTable = criteriaQuery.from(AppUser.class);
             criteriaQuery.select(rootTable).where(
                     cb.or(
-                            cb.like(rootTable.get("lastName"), "%"+searchedData+"%"),
-                            cb.like(rootTable.get("phoneNumber"), "%"+searchedData+"%")
-//                          ,  cb.like(rootTable.get("id"), "%"+searchedData+"%")
+                            cb.like(rootTable.get("lastName"), "%" + searchedData + "%"),
+                            cb.like(rootTable.get("phoneNumber"), "%" + searchedData + "%"),
+                            cb.like(rootTable.get("email"), "%" + searchedData + "%")
                     )
             ).orderBy(
-                    cb.desc(rootTable.get("lastName"))
+                    cb.asc(rootTable.get("lastName"))
             );
             list.addAll(session.createQuery(criteriaQuery).list());
         } catch (HibernateException he) {

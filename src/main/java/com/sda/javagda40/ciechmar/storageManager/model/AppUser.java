@@ -31,7 +31,7 @@ public class AppUser {
     private Set<CompanyData> companies;
 
 
-    @OneToMany (mappedBy = "userRent")
+    @OneToMany (mappedBy = "userRent", fetch = FetchType.EAGER)
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
     private Set<Rent> rentals;

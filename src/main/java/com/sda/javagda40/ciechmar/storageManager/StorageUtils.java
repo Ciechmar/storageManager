@@ -2,48 +2,20 @@ package com.sda.javagda40.ciechmar.storageManager;
 
 import com.sda.javagda40.ciechmar.storageManager.database.EntityDao;
 import com.sda.javagda40.ciechmar.storageManager.database.StorageDao;
+import com.sda.javagda40.ciechmar.storageManager.database.UserDao;
 import com.sda.javagda40.ciechmar.storageManager.model.*;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Scanner;
 
 public class StorageUtils {
-    private EntityDao<Storage> storageEntityDao = new EntityDao<>();
-    private EntityDao<Rent> rentEntityDao = new EntityDao<>();
-    private EntityDao<AppUser> userEntityDao = new EntityDao<>();
-    private StorageDao storageDao = new StorageDao();
-    private Scanner scanner = new Scanner(System.in);
+    private final EntityDao<Storage> storageEntityDao = new EntityDao<>();
+    private final EntityDao<AppUser> userEntityDao = new EntityDao<>();
+    private final EntityDao<Rent> rentEntityDao = new EntityDao<>();
+    private final UserDao userDao = new UserDao();
+    private final StorageDao storageDao = new StorageDao();
+    private final Scanner scanner = new Scanner(System.in);
 
-    protected void handleRentStorage() {
-        System.out.println("Podaj id klienta:");
-        Long userId = scanner.nextLong();
-        System.out.println("Podaj Id wynajmowanego magazynu:");
-        Long storageId = scanner.nextLong();
-//        Todo: - wybór kryteriów , wyświetlenie listy, znalezienie po Id, rezerwacja *** połączei danego magazynu z użytkownikiem ****
-        Rent rent = new Rent();
-        rent.setStorage(storageEntityDao.findById(Storage.class, storageId).get()); //ifPresent jakby nie było magazyn/użytkownika z takim ID
-        rent.setUserRent(userEntityDao.findById(AppUser.class, userId).get());
-        System.out.println("Od kiedy wynajem? YYYYY-MM-DD");
-        rent.setRentFrom(LocalDate.parse(scanner.nextLine()));
-        System.out.println("Do kiedy wynajem? YYYYY-MM-DD");
-        rent.setRentTo(LocalDate.parse(scanner.nextLine()));
-        System.out.println("Czy klientowi przysłguje zniżka? T/N");
-        if (scanner.nextLine().equalsIgnoreCase("n")) {
-            rent.setFinalPrize(storageEntityDao.findById(Storage.class, storageId).get().getStandardPrize());
-        } else {
-            float prize = storageEntityDao.findById(Storage.class, storageId).get().getStandardPrize();
-            System.out.println("Ile zniżki dodać?");
-            prize = prize - scanner.nextFloat();
-            System.out.printf("Cena za magazyn to: %.2f", prize); //jak zmusić,by nie było możliwości wpisania 3 miejsc po przecinku?! -nie gubiło tysięcznych złotówki
-            rent.setFinalPrize(prize);
-        }
-        storageEntityDao.findById(Storage.class, storageId).ifPresent(storage -> storage.setStatus(StorageStatus.RENT));
-        storageEntityDao.findById(Storage.class, storageId).ifPresent(storage -> storage.getStorageRentals().add(rent));
-
-        userEntityDao.findById(AppUser.class, userId).ifPresent(user -> user.getRentals().add(rent));
-        rentEntityDao.saveOrUpdate(rent);
-    }
 
     protected void showReservations() {
 //        List<Storage> storageList = storageEntityDao.findAll(Storage.class);
@@ -94,7 +66,7 @@ public class StorageUtils {
             }
             case "2":
             case "specyfikacja": {
-                System.out.println("Lista magazynów typu \n1.garaż\2.do użytku sanepidowskiego");
+                System.out.println("Lista magazynów typu: \n1.garaż\n2.do użytku sanepidowskiego");
                 String answer = scanner.nextLine();
                 if (answer.equals("1") || answer.equalsIgnoreCase("garaz") || answer.equalsIgnoreCase("garaż")) {
                     System.out.println("Magazyny garażowe:");
@@ -152,7 +124,7 @@ public class StorageUtils {
         } while (storage.getDoorNumber() == 0);
         do {
             System.out.println("Rozmiar: 1/2/3/4/6/9/15/20(w m2)"); //MINI2m2, MINI3m2, MINI4m2, MIDI6m2, MIDI9m3, MAX15m2, MAX20m2;
-
+            System.out.println("Rozmiar 15m2 i 20m2 są zawsze na poziomie 0 (Garaże)"); //MINI2m2, MINI3m2, MINI4m2, MIDI6m2, MIDI9m3, MAX15m2, MAX20m2;
             switch (scanner.nextLine()) {
                 case "1": {
                     storage.setSize(StorageSize.MINI1m2);
@@ -200,12 +172,14 @@ public class StorageUtils {
                     storage.setSize(StorageSize.MAX15m2);
                     storage.setStandardPrize(200);
                     storage.setGarage(true);
+                    storage.setFloor(Floor.ZERO);
                     storage.setStatus(StorageStatus.FREE);
                     break;
                 }
                 case "20": {
                     storage.setSize(StorageSize.MAX20m2);
                     storage.setStandardPrize(250);
+                    storage.setFloor(Floor.ZERO);
                     storage.setGarage(true);
                     storage.setStatus(StorageStatus.FREE);
                     break;
@@ -283,8 +257,7 @@ public class StorageUtils {
     }
 
     protected void handleListStorage() {
-        EntityDao<Storage> classEntityDao = new EntityDao();
-        classEntityDao.findAll(Storage.class)
+        storageEntityDao.findAll(Storage.class)
                 .forEach((System.out::println));
     }
 
@@ -334,6 +307,5 @@ public class StorageUtils {
             }
         }
     }
-
 
 }

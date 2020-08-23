@@ -14,19 +14,20 @@ public class Storage {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
+    @Enumerated(value = EnumType.STRING)
     private StorageSize size;
     private int doorNumber;
     private boolean forSanepidUse;
     private boolean isGarage;
     private float standardPrize;
     private Floor floor;
+    @Enumerated(value = EnumType.STRING)
     private StorageColor color;
+    @Enumerated(value = EnumType.STRING)
     private StorageStatus status;
 
-    @OneToMany(mappedBy = "storage")
+    @OneToMany(mappedBy = "storage", fetch = FetchType.EAGER)
     @EqualsAndHashCode.Exclude
-    @ToString.Exclude
     private Set<Rent> storageRentals;
 
     public Storage(StorageSize size, int doorNumber, boolean forSanepidUse, boolean isGarage, float standardPrize, Floor floor, StorageColor color, StorageStatus status) {

@@ -20,7 +20,6 @@ public class StorageDao {
 
     public List<Storage> findAllRented() {
         List<Storage> list = new ArrayList<>();
-
         try (Session session = sessionFactory.openSession()) {
             CriteriaBuilder cb = session.getCriteriaBuilder();
             CriteriaQuery<Storage> criteriaQuery = cb.createQuery(Storage.class);
@@ -38,8 +37,7 @@ public class StorageDao {
     }
 
     public List<Storage> findAllFree() {
-         List<Storage> list = new ArrayList<>();
-
+        List<Storage> list = new ArrayList<>();
         try (Session session = sessionFactory.openSession()) {
             CriteriaBuilder cb = session.getCriteriaBuilder();
             CriteriaQuery<Storage> criteriaQuery = cb.createQuery(Storage.class);
@@ -57,8 +55,7 @@ public class StorageDao {
     }
 
     public List<Storage> findBySize(StorageSize size) {
-         List<Storage> list = new ArrayList<>();
-
+        List<Storage> list = new ArrayList<>();
         try (Session session = sessionFactory.openSession()) {
             CriteriaBuilder cb = session.getCriteriaBuilder();
             CriteriaQuery<Storage> criteriaQuery = cb.createQuery(Storage.class);
@@ -74,8 +71,7 @@ public class StorageDao {
     }
 
     public List<Storage> findGarage() {
-         List<Storage> list = new ArrayList<>();
-
+        List<Storage> list = new ArrayList<>();
         try (Session session = sessionFactory.openSession()) {
             CriteriaBuilder cb = session.getCriteriaBuilder();
             CriteriaQuery<Storage> criteriaQuery = cb.createQuery(Storage.class);
@@ -91,8 +87,7 @@ public class StorageDao {
     }
 
     public List<Storage> findForSanepidUse() {
-         List<Storage> list = new ArrayList<>();
-
+        List<Storage> list = new ArrayList<>();
         try (Session session = sessionFactory.openSession()) {
             CriteriaBuilder cb = session.getCriteriaBuilder();
             CriteriaQuery<Storage> criteriaQuery = cb.createQuery(Storage.class);
@@ -109,7 +104,6 @@ public class StorageDao {
 
     public List<Storage> findDoorNumber(int doorNumber) {
         List<Storage> list = new ArrayList<>();
-
         try (Session session = sessionFactory.openSession()) {
             CriteriaBuilder cb = session.getCriteriaBuilder();
             CriteriaQuery<Storage> criteriaQuery = cb.createQuery(Storage.class);

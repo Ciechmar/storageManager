@@ -17,20 +17,35 @@ public class Rent {
 
     private LocalDate rentFrom;
     private LocalDate rentTo;
+    private LocalDate contractDate;
     private float finalPrize;
 
-    @ManyToOne
+    @ManyToOne (fetch = FetchType.EAGER)
     @EqualsAndHashCode.Exclude
+    @ToString.Exclude
     private Storage storage;
 
     @ManyToOne
     @EqualsAndHashCode.Exclude
     private AppUser userRent;
 
-    public Rent(LocalDate rentFrom, LocalDate rentTo, float finalPrize) {
+    public Rent(LocalDate rentFrom, LocalDate rentTo, LocalDate contractDate, float finalPrize) {
         this.rentFrom = rentFrom;
         this.rentTo = rentTo;
+        this.contractDate = contractDate;
         this.finalPrize = finalPrize;
     }
 
+    @Override
+    public String toString() {
+        return "Rent{" +
+                "id=" + id +
+                ", rentFrom=" + rentFrom +
+                ", rentTo=" + rentTo +
+                ", contractDate=" + contractDate +
+                ", finalPrize=" + finalPrize +
+                ", storage= id: " + storage.getId() + " size :" + storage.getSize() +
+                ", userRent= surname: " + userRent.getLastName() +
+                '}';
+    }
 }
